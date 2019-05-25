@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/nav_graph"
+            app:startDestination="@id/fragmentThisWeekForecast">
+
+    <fragment
+            android:id="@+id/fragmentThisWeekForecast"
+            android:name="com.aleksandr.aleksandrov.weatherfornatife.fragments.ThisWeekForecastFragment_"
+            android:label="ThisWeekForecast"
+            tools:layout="@layout/fragment_this_week_forecast"/>
+
+</navigation>

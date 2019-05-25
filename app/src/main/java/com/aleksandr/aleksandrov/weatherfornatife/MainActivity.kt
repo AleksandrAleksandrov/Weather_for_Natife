@@ -1,12 +1,17 @@
 package com.aleksandr.aleksandrov.weatherfornatife
 
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.annotation.SuppressLint
+import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseActivity
+import org.androidannotations.annotations.AfterViews
+import org.androidannotations.annotations.EActivity
 
-class MainActivity : AppCompatActivity() {
+@SuppressLint("Registered")
+@EActivity(R.layout.activity_main)
+open class MainActivity : BaseActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    @AfterViews
+    fun setUpViews() {
+        fragmentNavigatorController = R.id.fragment_container
     }
+
 }
