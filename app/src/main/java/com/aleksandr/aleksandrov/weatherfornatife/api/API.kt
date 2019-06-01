@@ -9,7 +9,7 @@ import retrofit2.http.GET
  */
 interface API {
 
-    @GET("data/2.5/forecast?q=London,us&mode=json&appid=cc6b06d93f29fe8e82886a5fe07c1bb5")
+    @GET("data/2.5/forecast?q=kiev,ua&mode=json&appid=cc6b06d93f29fe8e82886a5fe07c1bb5")
     fun getFiveDaysForecast(): Call<City>
 
 }

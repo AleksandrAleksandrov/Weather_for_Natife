@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 class DayInfo {
 
     @SerializedName("dt")
-    val dt: Int? = null
+    val dt: Long = 0
 
     @SerializedName("main")
     val main: Main? = null

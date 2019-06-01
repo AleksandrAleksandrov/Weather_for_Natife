@@ -29,6 +29,6 @@ class City {
     val cnt: Int? = null
 
     @SerializedName("list")
-    val list: List<DayInfo>? = null
+    val list: MutableList<DayInfo>? = null
 
 }
