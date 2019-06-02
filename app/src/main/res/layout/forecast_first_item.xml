@@ -5,30 +5,97 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="300dp"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimaryDark">
+
+    <ImageView
+        android:id="@+id/ivLocation"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_place"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvCurrentTemperature"
-        android:layout_width="wrap_content"
+        android:id="@+id/tvCityName"
+        style="@style/brightText"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        tools:text="27 C"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toStartOf="@+id/ivChooseLocation"
+        app:layout_constraintStart_toEndOf="@+id/ivLocation"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Zaporizhzhya" />
+
+    <ImageView
+        android:id="@+id/ivChooseLocation"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/ic_gps_fixed"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvCurrentTemperature"
+        style="@style/brightText"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivLocation"
+        tools:text="27 C" />
+
+    <ImageView
+        android:id="@+id/ivWeatherIcon"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_place"
+        app:layout_constraintBottom_toTopOf="@+id/rvSelectedDay"
+        app:layout_constraintEnd_toStartOf="@+id/include"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCurrentTemperature" />
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/layout_weather_state_set"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/rvSelectedDay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCurrentTemperature" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvSelectedDay"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="100dp"
         android:layout_marginBottom="0dp"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="horizontal"
+        android:background="@color/colorPrimary"
         tools:listitem="@layout/list_item_future_forecast" />
 
 </android.support.constraint.ConstraintLayout>

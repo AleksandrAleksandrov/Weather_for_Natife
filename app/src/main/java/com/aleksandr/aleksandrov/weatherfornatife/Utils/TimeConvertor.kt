@@ -10,9 +10,9 @@ class TimeConvertor {
 
     companion object {
 
-        private val fullDayPattern = "EE, dd MMM"
-        private val dayOfWeekPattern = "EE"
-        private val hoursPattern = "EE"
+        private const val fullDayPattern = "EE, dd MMM"
+        private const val dayOfWeekPattern = "EE"
+        private const val hoursPattern = "HH"
 
         fun convertToFullDate(time: Long) : String {
             val cal = Calendar.getInstance()

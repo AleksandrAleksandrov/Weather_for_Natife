@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Weather for Natife</string>
+    <string name="app_name" translatable="false">Weather for Natife</string>
+    <string name="celsius" translatable="false">&#176;</string>
+    <string name="m_sec">m/sec</string>
 </resources>

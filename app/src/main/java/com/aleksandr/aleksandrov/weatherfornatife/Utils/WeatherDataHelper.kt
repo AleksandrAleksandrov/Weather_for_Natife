@@ -1,5 +1,6 @@
 package com.aleksandr.aleksandrov.weatherfornatife.Utils
 
+import android.text.format.DateUtils
 import com.aleksandr.aleksandrov.weatherfornatife.api.models.Day
 import com.aleksandr.aleksandrov.weatherfornatife.api.models.DayInfo
 import java.util.*
@@ -31,7 +32,7 @@ class WeatherDataHelper {
                     if (it.dayInfo.size == 0) {
                         it.dayInfo.add(info)
                         return
-                    } else if (isSameDay(it.dayInfo[0].dt* 1000, info.dt* 1000)) {
+                    } else if (isSameDay(it.dayInfo[0].dt * DateUtils.SECOND_IN_MILLIS, info.dt * DateUtils.SECOND_IN_MILLIS)) {
                         it.dayInfo.add(info)
                         return
                     }

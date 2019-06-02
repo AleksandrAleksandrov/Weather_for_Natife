@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:background="@color/colorPrimaryDark">
+
+    <TextView
+        android:id="@+id/tvMaxMinTemp"
+        style="@style/brightText"
+        android:layout_margin="5dp"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="15dp"
+        android:drawableLeft="@drawable/ic_thermometer"
+        tools:text="27&#176;/19&#176;" />
+
+    <TextView
+        android:id="@+id/tvHumidity"
+        style="@style/brightText"
+        android:layout_margin="5dp"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="15dp"
+        android:drawableLeft="@drawable/ic_humidity"
+        tools:text="27%" />
+
+    <TextView
+        android:id="@+id/tvWind"
+        style="@style/brightText"
+        android:layout_margin="5dp"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="15dp"
+        android:drawableLeft="@drawable/ic_wind"
+        android:drawableRight="@drawable/ic_icon_wind_n"
+        tools:text="27м/сек" />
+
+</LinearLayout>
