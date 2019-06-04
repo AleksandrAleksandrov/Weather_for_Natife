@@ -6,7 +6,8 @@ package com.aleksandr.aleksandrov.weatherfornatife.api
 interface APIConstants {
 
     companion object {
-        val BASE_URL: String = "http://api.openweathermap.org/"
+        const val BASE_URL: String = "http://api.openweathermap.org/"
+        const val APP_ID: String = "cc6b06d93f29fe8e82886a5fe07c1bb5"
     }
 
 }

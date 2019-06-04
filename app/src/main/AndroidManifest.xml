@@ -12,13 +12,19 @@
             android:supportsRtl="true"
             android:usesCleartextTraffic="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity_">
+        <activity android:name=".activities.MainActivity_">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity android:name=".activities.MapActivity_"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBBSeeyqO36kst17x5pB0zQ23QXKPsq6vk" />
     </application>
 
 </manifest>

@@ -8,6 +8,10 @@ import androidx.navigation.Navigation
  */
 abstract class BaseActivity : AppCompatActivity() {
 
+    companion object {
+        const val RESULT_MAP = 1000
+    }
+
     protected var fragmentNavigatorController: Int = 0
 
     fun navigateTo(res: Int) {

@@ -1,25 +1,25 @@
 package com.aleksandr.aleksandrov.weatherfornatife.fragments
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
-import android.util.Log
+import android.view.View
 import com.aleksandr.aleksandrov.weatherfornatife.R
-import com.aleksandr.aleksandrov.weatherfornatife.Utils.WeatherDataHelper
+import com.aleksandr.aleksandrov.weatherfornatife.activities.MapActivity.Companion.RESULT_EXTRA_COORDINATES
+import com.aleksandr.aleksandrov.weatherfornatife.activities.MapActivity_
 import com.aleksandr.aleksandrov.weatherfornatife.adapters.WeatherAdapter
-import com.aleksandr.aleksandrov.weatherfornatife.api.ResponseCallback
-import com.aleksandr.aleksandrov.weatherfornatife.api.Rest
-import com.aleksandr.aleksandrov.weatherfornatife.api.models.City
+import com.aleksandr.aleksandrov.weatherfornatife.api.ServerInteractor
 import com.aleksandr.aleksandrov.weatherfornatife.api.models.Day
+import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseActivity.Companion.RESULT_MAP
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.ListFragmentBase
+import com.aleksandr.aleksandrov.weatherfornatife.base_classes.OnResultListener
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.androidannotations.annotations.AfterViews
-import org.androidannotations.annotations.Bean
-import org.androidannotations.annotations.EFragment
-import org.androidannotations.annotations.ViewById
-import retrofit2.Call
-import retrofit2.Response
+import org.androidannotations.annotations.*
+
 
 /**
  * Created by Alexandrov Alex on 2019-05-25.
@@ -36,7 +36,7 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
     @Bean
     lateinit var weatherAdapter: WeatherAdapter
 
-    var rest: Rest = Rest()
+    val serverInteractor = ServerInteractor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +64,10 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
         }
 
         fetchFiveDaysForecast()
+
+        weatherAdapter.setSelectCoordinate(View.OnClickListener {
+            openMap()
+        })
     }
 
     fun setRefreshEnabled(isRefreshEnabled: Boolean) {
@@ -82,31 +86,59 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
         }
     }
 
+
     private fun fetchFiveDaysForecast() = runBlocking {
         val job = launch {
-            rest.getAPI().getFiveDaysForecast().enqueue(object : ResponseCallback<City>() {
+            serverInteractor.fetchFiveDaysForecast(object : OnResultListener<MutableList<Day>> {
 
-                override fun onSuccess(call: Call<City>, response: Response<City>) {
+                override fun onResult(result: MutableList<Day>) {
                     setRefreshEnabled(true)
-                    var days: MutableList<Day> = WeatherDataHelper.sortDays(response.body()!!.list!!)
-
-                    weatherAdapter.setAdapterData(days)
+                    weatherAdapter.setAdapterData(result)
                     rvThisWeekForecast.adapter = weatherAdapter
-                    Log.d("tag", response.body()?.cod)
                 }
 
-                override fun onError(call: Call<City>, response: Response<City>) {
+                override fun onError(error: String) {
                     setRefreshEnabled(false)
-                    Log.d("tag", "error")
+                    showMessage(error)
                 }
 
-                override fun onFailure(call: Call<City>, t: Throwable) {
-                    setRefreshEnabled(false)
-                    Log.d("tag", t.toString())
-                }
             })
         }
         job.join()
+    }
+
+    private fun fetchFiveDaysForecastByCoordinates(lat: Double, lon: Double) = runBlocking {
+        val job = launch {
+            serverInteractor.fetchFiveDaysForecastByCoordinates(lat, lon, object : OnResultListener<MutableList<Day>> {
+
+                override fun onResult(result: MutableList<Day>) {
+                    setRefreshEnabled(true)
+                    weatherAdapter.setAdapterData(result)
+                    rvThisWeekForecast.adapter = weatherAdapter
+                }
+
+                override fun onError(error: String) {
+                    setRefreshEnabled(false)
+                    showMessage(error)
+                }
+
+            })
+        }
+        job.join()
+    }
+
+    fun openMap() {
+        val intent = Intent(context, MapActivity_::class.java)
+        startActivityForResult(intent, RESULT_MAP)
+    }
+
+    @OnActivityResult(RESULT_MAP)
+    internal fun resultFromMap(resultCode: Int, @OnActivityResult.Extra(value = RESULT_EXTRA_COORDINATES) value: LatLng?) {
+        if (resultCode == RESULT_OK) {
+            val lat = value!!.latitude
+            val lon = value!!.longitude
+            fetchFiveDaysForecastByCoordinates(lat, lon)
+        }
     }
 
 }

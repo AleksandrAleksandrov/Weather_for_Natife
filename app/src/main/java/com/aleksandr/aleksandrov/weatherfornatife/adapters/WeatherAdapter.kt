@@ -1,6 +1,7 @@
 package com.aleksandr.aleksandrov.weatherfornatife.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import com.aleksandr.aleksandrov.weatherfornatife.R
 import com.aleksandr.aleksandrov.weatherfornatife.adapters.holders.ThisWeekForecastFirstVH
@@ -8,6 +9,7 @@ import com.aleksandr.aleksandrov.weatherfornatife.adapters.holders.ThisWeekForec
 import com.aleksandr.aleksandrov.weatherfornatife.api.models.Day
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseRecyclerViewAdapter
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseWeatherInfoVH
+import kotlinx.android.synthetic.main.forecast_first_item.view.*
 import org.androidannotations.annotations.EBean
 
 /**
@@ -21,6 +23,8 @@ open class WeatherAdapter : BaseRecyclerViewAdapter<Day, BaseWeatherInfoVH>() {
         const val LIST_INFO_TYPE = 1
         const val ADDITIONAL_ROWS = 1
     }
+
+    lateinit var selectCoordinates: View.OnClickListener
 
     var selectedIndex: Int = 0
 
@@ -37,6 +41,9 @@ open class WeatherAdapter : BaseRecyclerViewAdapter<Day, BaseWeatherInfoVH>() {
     override fun onBindViewHolder(holder: BaseWeatherInfoVH, position: Int) {
         if (position == 0) {
             (holder as ThisWeekForecastFirstVH).bind(data[selectedIndex])
+            (holder as ThisWeekForecastFirstVH).itemView.ivChooseLocation.setOnClickListener(View.OnClickListener {
+                selectCoordinates.onClick(it)
+            })
         } else {
             (holder as ThisWeekForecastItemVH).bind(data[position - ADDITIONAL_ROWS])
             holder.itemView.tag = position - ADDITIONAL_ROWS
@@ -58,5 +65,9 @@ open class WeatherAdapter : BaseRecyclerViewAdapter<Day, BaseWeatherInfoVH>() {
 
     override fun getItemCount(): Int {
         return super.getItemCount() + ADDITIONAL_ROWS
+    }
+
+    fun setSelectCoordinate(listener : View.OnClickListener) {
+        selectCoordinates = listener
     }
 }

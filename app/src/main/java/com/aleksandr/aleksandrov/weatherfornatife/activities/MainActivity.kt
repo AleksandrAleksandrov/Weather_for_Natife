@@ -1,6 +1,7 @@
-package com.aleksandr.aleksandrov.weatherfornatife
+package com.aleksandr.aleksandrov.weatherfornatife.activities
 
 import android.annotation.SuppressLint
+import com.aleksandr.aleksandrov.weatherfornatife.R
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseActivity
 import org.androidannotations.annotations.AfterViews
 import org.androidannotations.annotations.EActivity

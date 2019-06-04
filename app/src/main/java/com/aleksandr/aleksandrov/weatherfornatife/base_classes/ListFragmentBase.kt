@@ -1,5 +1,6 @@
 package com.aleksandr.aleksandrov.weatherfornatife.base_classes
 
+import android.widget.Toast
 import com.aleksandr.aleksandrov.weatherfornatife.R
 
 /**
@@ -18,5 +19,9 @@ abstract class ListFragmentBase : FragmentBase() {
 
     protected var isRefreshing: Boolean = false
     protected var isRefreshEnable: Boolean = false
+
+    protected fun showMessage(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
 
 }
