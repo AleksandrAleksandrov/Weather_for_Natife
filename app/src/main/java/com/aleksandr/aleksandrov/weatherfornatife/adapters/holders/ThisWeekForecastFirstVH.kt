@@ -4,7 +4,7 @@ import android.view.View
 import com.aleksandr.aleksandrov.weatherfornatife.R
 import com.aleksandr.aleksandrov.weatherfornatife.Utils.IconHelper
 import com.aleksandr.aleksandrov.weatherfornatife.Utils.TimeConvertor
-import com.aleksandr.aleksandrov.weatherfornatife.adapters.WeaterSelectedDayAdapter
+import com.aleksandr.aleksandrov.weatherfornatife.adapters.WeatherSelectedDayAdapter
 import com.aleksandr.aleksandrov.weatherfornatife.api.models.Day
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseWeatherInfoVH
 import kotlinx.android.synthetic.main.forecast_first_item.view.*
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.layout_weather_state_set.view.*
 class ThisWeekForecastFirstVH(itemView: View) : BaseWeatherInfoVH(itemView) {
 
     override fun bind (item: Day) {
-        val adapter = WeaterSelectedDayAdapter()
+        val adapter = WeatherSelectedDayAdapter()
         adapter.setAdapterData(item.dayInfo)
         itemView.rvSelectedDay.adapter = adapter
         val temp = item.dayInfo[0].main!!.tempMax!!.toInt().toString() + itemView.context.resources.getString(R.string.celsius) + "/" +

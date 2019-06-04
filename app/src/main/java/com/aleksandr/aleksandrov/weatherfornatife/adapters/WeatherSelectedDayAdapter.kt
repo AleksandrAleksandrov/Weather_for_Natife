@@ -10,7 +10,7 @@ import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseRecyclerViewA
 /**
  * Created by Alexandrov Alex on 2019-06-01.
  */
-class WeaterSelectedDayAdapter : BaseRecyclerViewAdapter<DayInfo, HourForecastVH>() {
+class WeatherSelectedDayAdapter : BaseRecyclerViewAdapter<DayInfo, HourForecastVH>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HourForecastVH {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.hour_forecast_list_item, parent, false)

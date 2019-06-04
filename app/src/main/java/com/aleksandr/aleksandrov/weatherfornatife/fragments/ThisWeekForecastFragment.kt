@@ -13,12 +13,18 @@ import com.aleksandr.aleksandrov.weatherfornatife.adapters.WeatherAdapter
 import com.aleksandr.aleksandrov.weatherfornatife.api.ServerInteractor
 import com.aleksandr.aleksandrov.weatherfornatife.api.models.Day
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseActivity.Companion.RESULT_MAP
+import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseActivity.Companion.RESULT_PLACE_AUTOCOMPLETE
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.ListFragmentBase
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.OnResultListener
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.androidannotations.annotations.*
+import java.util.*
 
 
 /**
@@ -67,6 +73,10 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
 
         weatherAdapter.setSelectCoordinate(View.OnClickListener {
             openMap()
+        })
+
+        weatherAdapter.setFindPlaceListener(View.OnClickListener {
+            findPlace()
         })
     }
 
@@ -132,12 +142,32 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
         startActivityForResult(intent, RESULT_MAP)
     }
 
+    fun findPlace() {
+        if (!Places.isInitialized()) {
+            Places.initialize(context!!, context!!.resources.getString(R.string.google_maps_key))
+        }
+        val fields = Arrays.asList(Place.Field.ID, Place.Field.NAME)
+
+        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(context!!)
+        startActivityForResult(intent, RESULT_PLACE_AUTOCOMPLETE)
+    }
+
     @OnActivityResult(RESULT_MAP)
     internal fun resultFromMap(resultCode: Int, @OnActivityResult.Extra(value = RESULT_EXTRA_COORDINATES) value: LatLng?) {
         if (resultCode == RESULT_OK) {
-            val lat = value!!.latitude
-            val lon = value!!.longitude
-            fetchFiveDaysForecastByCoordinates(lat, lon)
+            value?.let {
+                val lat = it.latitude
+                val lon = it.longitude
+                fetchFiveDaysForecastByCoordinates(lat, lon)
+            }
+
+        }
+    }
+
+    @OnActivityResult(RESULT_PLACE_AUTOCOMPLETE)
+    internal fun resultFromCityAutocomplete(resultCode: Int, value: Intent) {
+        if (resultCode == RESULT_OK) {
+            showMessage(Autocomplete.getPlaceFromIntent(value).name!!)
         }
     }
 

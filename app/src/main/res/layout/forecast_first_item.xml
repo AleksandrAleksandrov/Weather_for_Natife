@@ -29,7 +29,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:textSize="22sp"
-        app:layout_constraintEnd_toStartOf="@+id/ivChooseLocation"
+        app:layout_constraintEnd_toStartOf="@+id/ivFindLocation"
         app:layout_constraintStart_toEndOf="@+id/ivLocation"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Zaporizhzhya" />
@@ -43,6 +43,17 @@
         android:layout_marginRight="16dp"
         android:src="@drawable/ic_gps_fixed"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivFindLocation"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/ic_search"
+        app:layout_constraintEnd_toStartOf="@+id/ivChooseLocation"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

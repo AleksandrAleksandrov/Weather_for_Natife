@@ -26,6 +26,8 @@ open class WeatherAdapter : BaseRecyclerViewAdapter<Day, BaseWeatherInfoVH>() {
 
     lateinit var selectCoordinates: View.OnClickListener
 
+    lateinit var findPlace: View.OnClickListener
+
     var selectedIndex: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseWeatherInfoVH {
@@ -41,8 +43,12 @@ open class WeatherAdapter : BaseRecyclerViewAdapter<Day, BaseWeatherInfoVH>() {
     override fun onBindViewHolder(holder: BaseWeatherInfoVH, position: Int) {
         if (position == 0) {
             (holder as ThisWeekForecastFirstVH).bind(data[selectedIndex])
-            (holder as ThisWeekForecastFirstVH).itemView.ivChooseLocation.setOnClickListener(View.OnClickListener {
+            holder.itemView.ivChooseLocation.setOnClickListener(View.OnClickListener {
                 selectCoordinates.onClick(it)
+            })
+
+            holder.itemView.ivFindLocation.setOnClickListener(View.OnClickListener {
+                findPlace.onClick(it)
             })
         } else {
             (holder as ThisWeekForecastItemVH).bind(data[position - ADDITIONAL_ROWS])
@@ -69,5 +75,9 @@ open class WeatherAdapter : BaseRecyclerViewAdapter<Day, BaseWeatherInfoVH>() {
 
     fun setSelectCoordinate(listener : View.OnClickListener) {
         selectCoordinates = listener
+    }
+
+    fun setFindPlaceListener(listener: View.OnClickListener) {
+        findPlace = listener
     }
 }
