@@ -28,7 +28,12 @@ open class MainActivity : BaseActivity() {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     val mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                     val location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                    (thisWeekForecastFragment as ThisWeekForecastFragment).fetchFiveDaysForecastByCoordinates(location.latitude, location.longitude)
+                    if (location != null) {
+                        (thisWeekForecastFragment as ThisWeekForecastFragment).fetchFiveDaysForecastByCoordinates(location!!.latitude, location!!.longitude)
+                    } else {
+                        (thisWeekForecastFragment as ThisWeekForecastFragment).findPlace()
+                    }
+
                 } else {
                     (thisWeekForecastFragment as ThisWeekForecastFragment).findPlace()
                 }

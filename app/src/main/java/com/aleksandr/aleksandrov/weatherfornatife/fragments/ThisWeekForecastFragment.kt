@@ -54,6 +54,7 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
 
     lateinit var weatherViewModel: WeatherViewModel
 
+    //TODO include into view model
     var lat: Double = 0.0
     var lon: Double = 0.0
 
@@ -128,7 +129,11 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
         if (permission == PackageManager.PERMISSION_GRANTED) {
             val mLocationManager = activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-            fetchFiveDaysForecastByCoordinates(location.latitude, location.longitude)
+            if (location != null) {
+                fetchFiveDaysForecastByCoordinates(location!!.latitude, location!!.longitude)
+            } else {
+                findPlace()
+            }
         }
     }
 
