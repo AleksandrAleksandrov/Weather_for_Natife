@@ -14,29 +14,14 @@ open class ServerInteractor {
 
     var rest: Rest = Rest()
 
-    fun fetchFiveDaysForecast(resultList: OnResultListener<MutableList<Day>>) {
-        rest.getAPI().getFiveDaysForecast().enqueue(object : ResponseCallback<City>() {
-
-            override fun onSuccess(call: Call<City>, response: Response<City>) {
-                val days: MutableList<Day> = WeatherDataHelper.sortDays(response.body()!!.list!!)
-                resultList.onResult(days)
-            }
-
-            override fun onError(call: Call<City>, response: Response<City>) {
-                resultList.onError(response.message())
-            }
-
-            override fun onFailure(call: Call<City>, t: Throwable) {
-                resultList.onError(t.message.toString())
-            }
-        })
-    }
-
     fun fetchFiveDaysForecastByCoordinates(lat: Double, lon: Double, resultList: OnResultListener<MutableList<Day>>) {
         rest.getAPI().getFiveDaysForecastByCoordinates(lat, lon).enqueue(object : ResponseCallback<City>() {
 
             override fun onSuccess(call: Call<City>, response: Response<City>) {
                 val days: MutableList<Day> = WeatherDataHelper.sortDays(response.body()!!.list!!)
+                days.iterator().forEach {
+                    it.cityName = response.body()!!.city!!.name
+                }
                 resultList.onResult(days)
 
             }

@@ -10,10 +10,7 @@ import retrofit2.http.Query
  */
 interface API {
 
-    @GET("data/2.5/forecast?q=kiev,ua&mode=json&&units=metric&appid=" + APIConstants.APP_ID)
-    fun getFiveDaysForecast(): Call<City>
-
-    @GET("data/2.5/forecast?mode=json&&units=metric&appid=" + APIConstants.APP_ID)
+    @GET("data/2.5/forecast?name=city&mode=json&&units=metric&appid=" + APIConstants.APP_ID)
     fun getFiveDaysForecastByCoordinates(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double

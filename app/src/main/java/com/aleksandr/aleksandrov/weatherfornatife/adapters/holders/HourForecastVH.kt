@@ -14,8 +14,8 @@ import kotlinx.android.synthetic.main.hour_forecast_list_item.view.*
 class HourForecastVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(item: DayInfo) {
-        itemView.ivIcon.setImageDrawable(itemView.context.resources.getDrawable(IconHelper.weatherIcon(item.weather!!.get(0)!!.icon)))
-        itemView.tvHour.setText(TimeConvertor.convertToHours(item.dt))
-        itemView.tvHourTemperature.setText(item.main!!.temp!!.toInt().toString() + itemView.context.resources.getString(R.string.celsius))
+        itemView.ivIcon.setImageDrawable(itemView.context.resources.getDrawable(IconHelper.weatherIcon(item.weather!![0]!!.icon)))
+        itemView.tvHour.text = TimeConvertor.convertToHours(item.dt)
+        itemView.tvHourTemperature.text = item.main!!.temp!!.toInt().toString() + itemView.context.resources.getString(R.string.celsius)
     }
 }

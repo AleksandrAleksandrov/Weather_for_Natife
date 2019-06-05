@@ -31,4 +31,6 @@ class City {
     @SerializedName("list")
     val list: MutableList<DayInfo>? = null
 
+    @SerializedName("city")
+    val city: City? = null
 }

@@ -9,4 +9,5 @@ class Day {
 
     val dayInfo: MutableList<DayInfo> = ArrayList()
 
+    var cityName: String? = null
 }

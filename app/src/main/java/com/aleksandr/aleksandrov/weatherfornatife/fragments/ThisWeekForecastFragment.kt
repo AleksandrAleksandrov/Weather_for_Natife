@@ -54,6 +54,9 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
 
     lateinit var weatherViewModel: WeatherViewModel
 
+    var lat: Double = 0.0
+    var lon: Double = 0.0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
@@ -86,7 +89,7 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
             it?.let {
                 mSwipeRefreshLayout.isRefreshing = it
                 if (!it) {
-                    if (weatherAdapter.getAdapterData().size == 0) fetchFiveDaysForecast()
+                    if (weatherAdapter.getAdapterData().size == 0) getLocation()
                 }
             }
         })
@@ -116,7 +119,9 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
                 ActivityCompat.requestPermissions(activity!!,
                     arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSIONS_REQUEST_LOCATION)
         }
+    }
 
+    fun getLocation() {
         val permission = ContextCompat.checkSelfPermission(context!!,
             Manifest.permission.ACCESS_COARSE_LOCATION)
 
@@ -129,29 +134,7 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
 
     override fun onRefresh() {
         weatherViewModel.setRefreshEnable(false)
-        fetchFiveDaysForecast()
-    }
-
-    private fun fetchFiveDaysForecast() = runBlocking {
-        weatherViewModel.setDataFetching(true)
-        val job = launch {
-            serverInteractor.fetchFiveDaysForecast(object : OnResultListener<MutableList<Day>> {
-
-                override fun onResult(result: MutableList<Day>) {
-                    weatherViewModel.setData(result)
-                    weatherViewModel.setDataFetching(false)
-                    weatherViewModel.setRefreshEnable(true)
-                }
-
-                override fun onError(error: String) {
-                    weatherViewModel.setDataFetching(false)
-                    weatherViewModel.setRefreshEnable(true)
-                    showMessage(error)
-                }
-
-            })
-        }
-        job.join()
+        fetchFiveDaysForecastByCoordinates(lat, lon)
     }
 
     fun fetchFiveDaysForecastByCoordinates(lat: Double, lon: Double) = runBlocking {
@@ -185,7 +168,7 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
         if (!Places.isInitialized()) {
             Places.initialize(context!!, context!!.resources.getString(R.string.google_maps_key))
         }
-        val fields = Arrays.asList(Place.Field.ID, Place.Field.NAME)
+        val fields = Arrays.asList(Place.Field.ID, Place.Field.LAT_LNG)
 
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(context!!)
         startActivityForResult(intent, RESULT_PLACE_AUTOCOMPLETE)
@@ -195,8 +178,8 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
     internal fun resultFromMap(resultCode: Int, @OnActivityResult.Extra(value = RESULT_EXTRA_COORDINATES) value: LatLng?) {
         if (resultCode == RESULT_OK) {
             value?.let {
-                val lat = it.latitude
-                val lon = it.longitude
+                lat = it.latitude
+                lon = it.longitude
                 fetchFiveDaysForecastByCoordinates(lat, lon)
             }
         }
@@ -205,7 +188,11 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
     @OnActivityResult(RESULT_PLACE_AUTOCOMPLETE)
     internal fun resultFromCityAutocomplete(resultCode: Int, value: Intent) {
         if (resultCode == RESULT_OK) {
-            showMessage(Autocomplete.getPlaceFromIntent(value).name!!)
+            value?.let {
+                lat = Autocomplete.getPlaceFromIntent(value).latLng!!.latitude
+                lon = Autocomplete.getPlaceFromIntent(value).latLng!!.longitude
+                fetchFiveDaysForecastByCoordinates(lat, lon)
+            }
         }
     }
 

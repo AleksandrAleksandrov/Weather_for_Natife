@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.forecast_list_item.view.*
 class ThisWeekForecastItemVH(itemView: View) : BaseWeatherInfoVH(itemView) {
 
     override fun bind(item: Day) {
-        itemView.ivIcon.setImageDrawable(itemView.context.resources.getDrawable(IconHelper.weatherIcon(item.dayInfo[0].weather!!.get(0)!!.icon)))
+        itemView.ivIcon.setImageDrawable(itemView.context.resources.getDrawable(IconHelper.weatherIcon(item.dayInfo[0].weather!![0]!!.icon)))
         itemView.tvDayOfWeek.text = convertToDayOfWeek(item.dayInfo[0].dt)
         val temp = item.dayInfo[0].main!!.tempMax!!.toInt().toString() + itemView.context.resources.getString(R.string.celsius) + "/" + item.dayInfo[0].main!!.tempMin!!.toInt() + itemView.context.resources.getString(R.string.celsius)
         itemView.tvTemperature.text = temp

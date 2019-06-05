@@ -27,8 +27,9 @@ class ThisWeekForecastFirstVH(itemView: View) : BaseWeatherInfoVH(itemView) {
         itemView.tvHumidity.text = humidity
         itemView.tvWind.text = windSpeed
         itemView.tvWind.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_wind, 0, IconHelper.degreeIcon(item.dayInfo[0].wind!!.deg), 0);
-        itemView.ivWeatherIcon.setImageDrawable(itemView.context.resources.getDrawable(IconHelper.weatherIcon(item.dayInfo[0].weather!!.get(0)!!.icon)))
-        itemView.tvCurrentTemperature.setText("" + TimeConvertor.convertToFullDate(item.dayInfo[0].dt))
+        itemView.ivWeatherIcon.setImageDrawable(itemView.context.resources.getDrawable(IconHelper.weatherIcon(item.dayInfo[0].weather!![0]!!.icon)))
+        itemView.tvCurrentTemperature.text = TimeConvertor.convertToFullDate(item.dayInfo[0].dt)
+        itemView.tvCityName.text = item.cityName
     }
 
 }
