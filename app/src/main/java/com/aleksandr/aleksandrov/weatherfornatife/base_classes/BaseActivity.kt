@@ -11,6 +11,7 @@ abstract class BaseActivity : AppCompatActivity() {
     companion object {
         const val RESULT_MAP = 1000
         const val RESULT_PLACE_AUTOCOMPLETE = 1100
+        const val PERMISSIONS_REQUEST_LOCATION = 1110
     }
 
     protected var fragmentNavigatorController: Int = 0

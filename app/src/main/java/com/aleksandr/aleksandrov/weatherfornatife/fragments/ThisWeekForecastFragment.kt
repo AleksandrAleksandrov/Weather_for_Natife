@@ -1,9 +1,15 @@
 package com.aleksandr.aleksandrov.weatherfornatife.fragments
 
+import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.arch.lifecycle.ViewModelProvider
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -13,6 +19,7 @@ import com.aleksandr.aleksandrov.weatherfornatife.activities.MapActivity_
 import com.aleksandr.aleksandrov.weatherfornatife.adapters.WeatherAdapter
 import com.aleksandr.aleksandrov.weatherfornatife.api.ServerInteractor
 import com.aleksandr.aleksandrov.weatherfornatife.api.models.Day
+import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseActivity.Companion.PERMISSIONS_REQUEST_LOCATION
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseActivity.Companion.RESULT_MAP
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseActivity.Companion.RESULT_PLACE_AUTOCOMPLETE
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.ListFragmentBase
@@ -27,7 +34,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.androidannotations.annotations.*
 import java.util.*
-
 
 /**
  * Created by Alexandrov Alex on 2019-05-25.
@@ -103,13 +109,28 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
         weatherAdapter.setFindPlaceListener(View.OnClickListener {
             findPlace()
         })
+
+        if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(activity!!,
+                    arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSIONS_REQUEST_LOCATION)
+        }
+
+        val permission = ContextCompat.checkSelfPermission(context!!,
+            Manifest.permission.ACCESS_COARSE_LOCATION)
+
+        if (permission == PackageManager.PERMISSION_GRANTED) {
+            val mLocationManager = activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+            fetchFiveDaysForecastByCoordinates(location.latitude, location.longitude)
+        }
     }
 
     override fun onRefresh() {
         weatherViewModel.setRefreshEnable(false)
         fetchFiveDaysForecast()
     }
-
 
     private fun fetchFiveDaysForecast() = runBlocking {
         weatherViewModel.setDataFetching(true)
@@ -133,7 +154,7 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
         job.join()
     }
 
-    private fun fetchFiveDaysForecastByCoordinates(lat: Double, lon: Double) = runBlocking {
+    fun fetchFiveDaysForecastByCoordinates(lat: Double, lon: Double) = runBlocking {
         weatherViewModel.setDataFetching(true)
         val job = launch {
             serverInteractor.fetchFiveDaysForecastByCoordinates(lat, lon, object : OnResultListener<MutableList<Day>> {
