@@ -1,6 +1,7 @@
 package com.aleksandr.aleksandrov.weatherfornatife.fragments
 
 import android.app.Activity.RESULT_OK
+import android.arch.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
@@ -16,6 +17,7 @@ import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseActivity.Comp
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.BaseActivity.Companion.RESULT_PLACE_AUTOCOMPLETE
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.ListFragmentBase
 import com.aleksandr.aleksandrov.weatherfornatife.base_classes.OnResultListener
+import com.aleksandr.aleksandrov.weatherfornatife.view_models.WeatherViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -44,6 +46,8 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
 
     val serverInteractor = ServerInteractor()
 
+    lateinit var weatherViewModel: WeatherViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
@@ -62,14 +66,35 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
 
     @AfterViews
     fun setUpViews() {
-        mSwipeRefreshLayout?.let {
-            it.setOnRefreshListener(this)
-            it.setColorSchemeResources(firstColor, secondColor, thirdColor)
-            it.isRefreshing = isRefreshing
-            it.isEnabled = isRefreshEnable
-        }
+        val factory = ViewModelProvider.AndroidViewModelFactory.getInstance(activity!!.application)
+        weatherViewModel = ViewModelProvider(this, factory).get(WeatherViewModel::class.java)
+        weatherViewModel.getData().observe(this, android.arch.lifecycle.Observer {
+            it?.let {
+                rvThisWeekForecast.adapter = weatherAdapter
+                weatherAdapter.setAdapterData(it)
+            }
 
-        fetchFiveDaysForecast()
+        })
+
+        weatherViewModel.isDataFetching().observe(this, android.arch.lifecycle.Observer {
+            it?.let {
+                mSwipeRefreshLayout.isRefreshing = it
+                if (!it) {
+                    if (weatherAdapter.getAdapterData().size == 0) fetchFiveDaysForecast()
+                }
+            }
+        })
+
+        weatherViewModel.isRefreshEnabled().observe(this, android.arch.lifecycle.Observer {
+            it?.let {
+//                mSwipeRefreshLayout.isEnabled = it
+            }
+        })
+
+        mSwipeRefreshLayout?.let {
+            mSwipeRefreshLayout.setOnRefreshListener(this)
+            mSwipeRefreshLayout.setColorSchemeResources(firstColor, secondColor, thirdColor)
+        }
 
         weatherAdapter.setSelectCoordinate(View.OnClickListener {
             openMap()
@@ -80,35 +105,26 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
         })
     }
 
-    fun setRefreshEnabled(isRefreshEnabled: Boolean) {
-        if (mSwipeRefreshLayout == null) return
-        mSwipeRefreshLayout?.let {
-            it.isEnabled = isRefreshEnabled
-            it.isRefreshing = false
-        }
-    }
-
     override fun onRefresh() {
+        weatherViewModel.setRefreshEnable(false)
         fetchFiveDaysForecast()
-        mSwipeRefreshLayout?.let {
-            it.isRefreshing = true
-//            setRefreshEnabled(false)
-        }
     }
 
 
     private fun fetchFiveDaysForecast() = runBlocking {
+        weatherViewModel.setDataFetching(true)
         val job = launch {
             serverInteractor.fetchFiveDaysForecast(object : OnResultListener<MutableList<Day>> {
 
                 override fun onResult(result: MutableList<Day>) {
-                    setRefreshEnabled(true)
-                    weatherAdapter.setAdapterData(result)
-                    rvThisWeekForecast.adapter = weatherAdapter
+                    weatherViewModel.setData(result)
+                    weatherViewModel.setDataFetching(false)
+                    weatherViewModel.setRefreshEnable(true)
                 }
 
                 override fun onError(error: String) {
-                    setRefreshEnabled(false)
+                    weatherViewModel.setDataFetching(false)
+                    weatherViewModel.setRefreshEnable(true)
                     showMessage(error)
                 }
 
@@ -118,17 +134,19 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
     }
 
     private fun fetchFiveDaysForecastByCoordinates(lat: Double, lon: Double) = runBlocking {
+        weatherViewModel.setDataFetching(true)
         val job = launch {
             serverInteractor.fetchFiveDaysForecastByCoordinates(lat, lon, object : OnResultListener<MutableList<Day>> {
 
                 override fun onResult(result: MutableList<Day>) {
-                    setRefreshEnabled(true)
-                    weatherAdapter.setAdapterData(result)
-                    rvThisWeekForecast.adapter = weatherAdapter
+                    weatherViewModel.setData(result)
+                    weatherViewModel.setDataFetching(false)
+                    weatherViewModel.setRefreshEnable(true)
                 }
 
                 override fun onError(error: String) {
-                    setRefreshEnabled(false)
+                    weatherViewModel.setDataFetching(false)
+                    weatherViewModel.setRefreshEnable(true)
                     showMessage(error)
                 }
 
@@ -160,7 +178,6 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
                 val lon = it.longitude
                 fetchFiveDaysForecastByCoordinates(lat, lon)
             }
-
         }
     }
 

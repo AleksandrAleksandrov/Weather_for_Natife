@@ -10,6 +10,7 @@ buildscript {
     ext.nav_version = "1.0.0-beta01"
     ext.google_map = "16.1.0"
     ext.google_places = "1.1.0"
+    ext.lifecycle_version = "1.1.1"
     repositories {
         google()
         jcenter()
@@ -27,7 +28,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+
     }
 }
 

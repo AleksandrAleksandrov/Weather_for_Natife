@@ -62,4 +62,7 @@ dependencies {
 
     //Places
     implementation "com.google.android.libraries.places:places:$google_places"
+
+    implementation "android.arch.lifecycle:viewmodel:$lifecycle_version"
+    annotationProcessor "android.arch.lifecycle:compiler:$lifecycle_version"
 }
