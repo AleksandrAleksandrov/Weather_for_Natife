@@ -95,12 +95,6 @@ open class ThisWeekForecastFragment : ListFragmentBase(), SwipeRefreshLayout.OnR
             }
         })
 
-        weatherViewModel.isRefreshEnabled().observe(this, android.arch.lifecycle.Observer {
-            it?.let {
-//                mSwipeRefreshLayout.isEnabled = it
-            }
-        })
-
         mSwipeRefreshLayout?.let {
             mSwipeRefreshLayout.setOnRefreshListener(this)
             mSwipeRefreshLayout.setColorSchemeResources(firstColor, secondColor, thirdColor)
